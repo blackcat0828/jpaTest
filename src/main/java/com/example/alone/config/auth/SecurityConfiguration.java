@@ -1,10 +1,6 @@
 package com.example.alone.config.auth;
 
-import javax.sql.DataSource;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -16,80 +12,34 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-@Configuration
+import com.example.alone.domain.user.Role;
+
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-	@Autowired
-	DataSource dataSource;
+	private final CustomOAuth2UserService customOAuth2UserService;
 	
-	
-	//security를 사용하면 h2의 접근을 막아버리기때문에 콘솔창에 접근할수 없으므로 예외처리
-	@Override 
-	public void configure(WebSecurity web) throws Exception { 
-		web.ignoring().antMatchers("/h2-console/**"); 
-	}
-
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
-		.cors()
+		.csrf().disable()
+		.headers().frameOptions().disable()
 		.and()
-		.csrf()
-		.disable()
-		// JWT 인증 필터 보안 컨텍스트에 추가
-		//세션 관리 비활성화
-		.sessionManagement()
-		.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-		
-		http.authorizeRequests()
-		.antMatchers("/").permitAll();
-
-//		http.authorizeRequests()
-//		.antMatchers("/auth/signin").permitAll()
-//		.antMatchers("/auth/signup/**").permitAll()
-//		.antMatchers("/**").hasAnyAuthority("ADMIN","MEMBER")
-//		.antMatchers("/admin/**").hasAuthority("ADMIN");
+			.authorizeRequests()
+			.antMatchers("/", "/css/**", "/images/**", "js/**", "/h2-console/**").permitAll()
+			.antMatchers("/api/v1/**").hasRole(Role.USER.name())
+			.anyRequest().authenticated()
+		.and()
+			.logout()
+				.logoutSuccessUrl("/")
+		.and()
+			.oauth2Login()
+				.userInfoEndpoint()
+					.userService(customOAuth2UserService);
 		
 		
 	}
-	
-	
-//	@Override
-//	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//		auth.passwordEncoder(createPasswordEncoder());
-//		
-//
-//	}	
-	
-
-	
-	@Bean
-	public PasswordEncoder createPasswordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
-	
-//	//스프링 시큐리티의 UserDetailsService를 구현한 클래스를 빈으로 등록한다.
-//	@Bean
-//	public UserDetailsService createUserDetailsService() {
-//		return new CustomUserDetailsService();
-//	}
-	
-	//CORS 설정
-	@Bean
-	public CorsConfigurationSource corsConfigurationSource() {
-		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.addAllowedOrigin("*");
-	    configuration.addAllowedMethod("*");
-	    configuration.addAllowedHeader("*");
-	    configuration.setMaxAge(3600L);
-		final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		//configuration.applyPermitDefaultValues()
-		//PUT, DELETE를 지원안함
-		source.registerCorsConfiguration("/**", configuration);
-		
-		
-		return source;
-	}
-	
 }

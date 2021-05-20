@@ -6,6 +6,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import com.example.alone.domain.BaseTimeEntity;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +15,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Posts {
+//@Table(name = "Posts_table") 테이블 명을 따로 지정해주고 싶을때 사용
+public class Posts extends BaseTimeEntity {
 	
 	@Id //해당 테이블이 PK임을 나타냄
 	//PK 생성 규칙을 나타냄
