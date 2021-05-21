@@ -1,16 +1,8 @@
 package com.example.alone.config.auth;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.example.alone.domain.user.Role;
 
@@ -30,7 +22,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 			.authorizeRequests() //URL별 권한 관리를 설정하는 옵션의 시작점 authorizeRequests가 선언되어야만 antMatchers사용 가능
 			//antMatchers - URL, HTTP 메소드별 관리가 가능하다.
 			.antMatchers("/", "/css/**", "/images/**", "js/**", "/h2-console/**").permitAll()
-			.antMatchers("/api/v1/**").hasRole(Role.USER.name())
+			.antMatchers("/api/v1/**").hasRole("USER")
 			.anyRequest().authenticated() //anyRequest 설정된 값들 외에 나머지 URL들을 나타낸다.
 		.and()
 			.logout()
