@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Entity
-//@Table(name = "Posts_table") 테이블 명을 따로 지정해주고 싶을때 사용
+//@Table(name = "Posts_table") 테이블 명을 따로 지정해주고 싶을때 사용 혹은 기존 DB 테이블의 이름과 객체의 이름이 다를때 매칭
 public class Posts extends BaseTimeEntity {
 	
 	@Id //해당 테이블이 PK임을 나타냄

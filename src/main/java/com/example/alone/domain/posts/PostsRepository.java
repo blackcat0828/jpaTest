@@ -16,3 +16,11 @@ public interface PostsRepository extends JpaRepository<Posts, Long> {
 	
 
 }
+
+
+//자바 제네릭에서 Type 표기 약어의 의미
+// E - Element (요소를 의미하는 약어)
+// K - Key(키를 의미하는 약어)
+// N - Number(숫자를 의미하는 약어)
+// T - Type (타입을 의마하는 약어)
+// V - Value (값을 의미하는 약어)
